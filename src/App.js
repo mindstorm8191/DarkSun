@@ -64,6 +64,8 @@ function MyObject(props) {
             </mesh>
         </mesh>
     );
+    // Something to note: Not only does rotation get affected by this, so does scaling. It may be better to attach all objects to a
+    // root object, and manipulate from there, instead of worrying about effects of connected objects.
 }
 
 function SpaceFloater(props) {}
