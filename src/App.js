@@ -7,7 +7,16 @@
 */
 
 import React from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useLoader } from "@react-three/fiber";
+import { useGLTF } from "@react-three/drei";
+import { TextureLoader } from "three/src/loaders/TextureLoader";
+//import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+// Canvas is a react-three-fiber version of the html canvas, allowing the library to control its content
+// useFrame lets us update content just like RequestAnimationFrame
+// useLoader allows us to load file content from data sources
+
+import shipmodel from "./ship1.gltf";
+import shipTexture from "./steelwall2.jpg";
 
 // To manage center of gravity, we have a COG object, and everything will attach to that, at its root. We will shift this around as needed to
 // compensate for sides that are heavier than others
@@ -17,57 +26,36 @@ function App() {
         <div id="canvas-container">
             <Canvas style={{ backgroundColor: "#202020", height: 700 }}>
                 <spotLight intensity={0.6} position={[30, 30, 50]} angle={0.2} penumbra={0.5} castShadow />
-                <MyObject />
+                <MyTestShip />
             </Canvas>
         </div>
     );
 }
 
-function MyObject(props) {
+function MyTestShip(props) {
     const myMesh = React.useRef();
-    const [active, setActive] = React.useState(false);
-    const [clicked, setClicked] = React.useState(false);
-    const [drift, setDrift] = React.useState([0, 0, 0]);
-    let spot = [0, 0, 0];
-
-    useFrame(() => {
-        //Reference.current.rotation.x += 0.005;
-        //Reference.current.rotation.y += 0.005;
-        //console.log("meep!");
-        myMesh.current.rotation.z += 0.005;
-        if (clicked) {
-            //console.log(myMesh.current);
-            myMesh.current.position.x += drift[0];
-            myMesh.current.position.y += drift[1];
-            myMesh.current.position.z += drift[2];
-        }
-    });
-
+    const { nodes, materials } = useGLTF(shipmodel);
+    const tex = useLoader(TextureLoader, shipTexture);
+    console.log(materials);
     return (
-        <mesh
-            ref={myMesh}
-            scale={active ? 1.5 : 1}
-            position={spot}
-            onPointerEnter={() => setActive(true)}
-            onPointerLeave={() => setActive(false)}
-            onClick={() => {
-                console.log(myMesh.current);
-                setDrift([Math.random() * 0.02 - 0.01, Math.random() * 0.02 - 0.01, Math.random() * 0.02 - 0.01]);
-                setClicked(!clicked);
-            }}
-        >
-            <octahedronGeometry />
-            <meshPhongMaterial color="yellow" />
-            <mesh position={[1.5, 0, 0]}>
-                <boxGeometry />
-                <meshPhongMaterial color="red" />
+        <React.Suspense fallback={null}>
+            <mesh rotation={[Math.PI / 2, 0, 0]} scale={0.2} geometry={nodes.ShipBody.geometry} material={materials.ShipBodyMaterial}>
+                <meshStandardMaterial map={tex} />
             </mesh>
-        </mesh>
+        </React.Suspense>
     );
-    // Something to note: Not only does rotation get affected by this, so does scaling. It may be better to attach all objects to a
-    // root object, and manipulate from there, instead of worrying about effects of connected objects.
+
+    //const { nodes, materials } = useGLTF("../media/ship3.glb");
+    /*
+    return (
+            <primitive object={null} />
+        </React.Suspense>
+    );*/
 }
 
-function SpaceFloater(props) {}
+function COGpoint(props) {
+    // This is the root of any entity, which affects the position and rotation of any attached object. Attached objects include ships, drifting
+    // parts and flying shots.
+}
 
 export default App;
