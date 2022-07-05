@@ -25,10 +25,38 @@ import { TextureLoader } from "three/src/loaders/TextureLoader";
 // To manage center of gravity, we have a COG object, and everything will attach to that, at its root. We will shift this around as needed to
 // compensate for sides that are heavier than others
 
+function ShipClass_Basic1() {
+    // Returns a ship class object
+    let b = {
+        model: "http://localhost/DarkSun/getmedia.php?file=ship1.gltf",
+        texture: "http://localhost/DarkSun/getmedia.php?file=steelwall2.jpg",
+        normalRotation: [Math.PI / 2, 0, 0],
+        normalScale: 0.2,
+        weight: 50,
+    };
+    return b;
+}
+
+function partclass_engine_ice1() {
+    // Returns a part class object. This is a basic internal combustion engine that burns gas to turn a generator
+    let b = {
+        model: "http://localhost/DarkSun/getmedia.php?file=engine1.gltf",
+        texture: "http://localhost/DarkSun/getmedia.php?file=steelwall2.jpg",
+        normalRotation: [Math.PI / 2, 0, 0],
+        normalScale: 0.2,
+        weight: 100,
+    };
+    return b;
+}
+
 function App() {
     const [userMode, setUserMode] = React.useState("combat");
 
     function Dolly(props) {
+        // React hooks can only be used inside the <Canvas /> tag. While we use it in App(), operations there are not inside it.
+        // Dolly() is a small React component (called inside <Canvas />), thus bypassing this problem. Currently it only manages the
+        // camera. Since we're not displaying anything with this object, this returns null.
+
         useFrame(({ camera }) => {
             if (userMode === "combat") {
                 camera.position.z = 5;
@@ -45,6 +73,7 @@ function App() {
                 <spotLight intensity={0.6} position={[30, 30, 50]} angle={0.2} penumbra={0.5} castShadow />
                 <MyTestShip position={[0.5, 0, 0]} />
                 <MyTestShip position={[-0.5, 0, 0]} rotation={[0, 0.1, 0]} isAdrift={true} />
+                <MyTestPart />
                 {/* Also show a starry background... we'll probably need to improve this later, but this should do for now */}
                 <StarryBackground />
                 <Dolly />
@@ -58,6 +87,34 @@ function App() {
                 </span>
             </div>
         </div>
+    );
+}
+
+function MyTestPart(props) {
+    // Let's show an engine!
+    const myMesh = React.useRef();
+    const { nodes, materials } = useGLTF("http://localhost/DarkSun/getmedia.php?file=engine1.gltf");
+    const tex = useLoader(TextureLoader, "http://localhost/DarkSun/getmedia.php?file=steelwall2.jpg");
+
+    return (
+        <React.Suspense fallback={null}>
+            <mesh
+                {...props}
+                ref={myMesh}
+                geometry={nodes.Cube.geometry}
+                material={materials.CubeMaterial}
+                scale={0.25}
+                rotation={[
+                    (props.rotation ? props.rotation[0] : 0) + Math.PI / 2,
+                    (props.rotation ? props.rotation[1] : 0) + -Math.PI / 2,
+                    (props.rotation ? props.rotation[2] : 0) + 0,
+                ]}
+            >
+                <React.Suspense fallback={null}>
+                    <meshStandardMaterial map={tex} />
+                </React.Suspense>
+            </mesh>
+        </React.Suspense>
     );
 }
 

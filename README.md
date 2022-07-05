@@ -25,7 +25,20 @@ Inner components of a part are specific to the type of part that is collected, a
 
 Ships can be outfitted with a wide variety of parts. Here are just some of them
 
--   Engines. These will provide power in the form of electricity for your entire ship. Power production will vary based on demand, reducing production to save fuel when demand is lower
+-   Engines. These will provide power in the form of electricity for your entire ship. Power production will vary based on demand, reducing production to save fuel when demand is lower.
+
+    -   Diesel / gasoline crank engine. These work with air recyclers that can extract carbon from the exhaust, putting the air back into the engine. They still require fuel to run, and benefit from having more oxygen
+        -   Crankshaft
+        -   Valve assembly
+        -   Timing computer
+        -   Fuel-air mixer - These can be carburetor, fuel injectors, or hybrid units
+        -   Gas carbon extractor - Extracts carbon from the exhaust gasses, so that the air can be used again
+        -   Alternator - converts engine power to electricity for the ship
+    -   Hydrogen fuel cells, combine a mix of materials to produce heat
+    -   RadioIsotope ThermalElectric Generators. Low power but lasts forever (in game speak, at least)
+    -   Nuclear fission with steam turbine
+    -   Nuclear fission with molten salt
+
 -   Capacitors. Energy storage devices that are provided to aid in running various parts. Many parts will require large amounts of energy to run, sometimes for short periods of time. Other parts may suddenly draw more power than your engine outputs. Capacitors are designed to carry the power load so your engines can catch up with demand.
 -   Thrusters. Allows your ship to move around. Thrusters come in a wide variety of sizes and methods for thrust.
 -   Storage. Provides storage of items. Item storage can be expanded by adding on however many storage parts you wish. However, the more you carry, the heavier your ship becomes.
