@@ -1,5 +1,17 @@
 # Dark Sun
 
+### How to get this running at home
+
+I haven't done a lot of setting up to get this to work elsewhere, so bear with me. This assumes you have WAMP running, and the project (at least the php & media files) are located in its www folder under /DarkSun; this will be necessary for loading models and textures
+Once you have the project unzipped, run `npm install` from the command prompt, in the Dark Sun folder.
+Make sure WAMP is running, then run `npm start`. This will start the client-side server
+
+Pitfalls
+
+-   If you get errors saying 'could not load' and 'failed to fetch', WAMP is not running
+-   If you get errors saying 'Access to image blocked by CORS`, the getmedia.php script is in the wrong place
+-   If you get errors saying 'Unexpected token < in JSON at position 0', the media folder is in the wrong place
+
 ### Gameplay
 
 This is a top-down spaceship shooter with RPG elements. Salvage parts off the enemy ships you destroy, to increase your ship's power. Rather than
@@ -13,7 +25,7 @@ You will face a wide variety of enemy ships, from different species. Each will a
 
 ### Acquiring Equipment
 
-Enemy ships wil be composed in the same manner as the player ship. During combat, if the player is able & lucky enough, they can target some portions of an enemy ship, so that the other parts can be salvaged. (A ship is still functional so long as the ship core isn't destroyed.)
+Enemy ships will be composed in the same manner as the player ship. During combat, if the player is able & lucky enough, they can target some portions of an enemy ship, so that the other parts can be salvaged. (A ship is still functional so long as the ship core isn't destroyed.)
 
 Once a ship's core takes enough damage, it explodes. This has a chance to damage parts it was connected to. Either way, the parts it was connected to will begin drifting slowly through space, since there is nothing to control its movements. Players will then use a grappling hook to snatch the part and pull it to their ship.
 
@@ -27,6 +39,9 @@ Ships can be outfitted with a wide variety of parts. Here are just some of them
 
 -   Engines. These will provide power in the form of electricity for your entire ship. Power production will vary based on demand, reducing production to save fuel when demand is lower.
 
+    -   Solar. Simple panels of cells. They can take up lots of room, though. Unfortunately, they lose their effectiveness if you are too far away from a star
+        -   Panel (stackable). Absorbs energy
+        -   Inverter. Converts electricity to a more useful voltage
     -   Diesel / gasoline crank engine. These work with air recyclers that can extract carbon from the exhaust, putting the air back into the engine. They still require fuel to run, and benefit from having more oxygen
         -   Crankshaft
         -   Valve assembly
@@ -40,6 +55,8 @@ Ships can be outfitted with a wide variety of parts. Here are just some of them
     -   Nuclear fission with molten salt
 
 -   Capacitors. Energy storage devices that are provided to aid in running various parts. Many parts will require large amounts of energy to run, sometimes for short periods of time. Other parts may suddenly draw more power than your engine outputs. Capacitors are designed to carry the power load so your engines can catch up with demand.
+    -   Electrode Capacitor. This is a basic unit
+    -   M
 -   Thrusters. Allows your ship to move around. Thrusters come in a wide variety of sizes and methods for thrust.
 -   Storage. Provides storage of items. Item storage can be expanded by adding on however many storage parts you wish. However, the more you carry, the heavier your ship becomes.
 -   Fluid Storage. Stores fluids and gasses of various types, including fuel. Many fluid storage parts allow more than one type to be stored in it, by way of shifting walls within it; the number of fluids will be limited, along with the total capacity.

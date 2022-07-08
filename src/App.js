@@ -74,6 +74,7 @@ function App() {
                 <MyTestShip position={[0.5, 0, 0]} />
                 <MyTestShip position={[-0.5, 0, 0]} rotation={[0, 0.1, 0]} isAdrift={true} />
                 <MyTestPart />
+                <MyCapacitor />
                 {/* Also show a starry background... we'll probably need to improve this later, but this should do for now */}
                 <StarryBackground />
                 <Dolly />
@@ -116,6 +117,52 @@ function MyTestPart(props) {
             </mesh>
         </React.Suspense>
     );
+}
+
+function MyCapacitor(props) {
+    // See if we can load something with multiple parts...
+
+    const { nodes, materials } = useGLTF("http://localhost/DarkSun/getmedia.php?file=Capacitor2.gltf");
+    const tex1 = useLoader(TextureLoader, "http://localhost/DarkSun/getmedia.php?file=steelwall2.jpg");
+    const tex2 = useLoader(TextureLoader, "http://localhost/DarkSun/getmedia.php?file=sunflare.jpg");
+
+    return (
+        <React.Suspense fallback={null}>
+            <mesh
+                {...props}
+                geometry={nodes.Box.geometry}
+                material={materials.BoxMaterial}
+                scale={0.3}
+                rotation={[Math.PI / 2, Math.PI, 0]}
+                position={[-1, 0, 0]}
+            >
+                <React.Suspense fallback={null}>
+                    <meshStandardMaterial map={tex1} />
+                    <mesh geometry={nodes.Cell1.geometry} material={materials.Cell1Material} scale={0.7} position={[0.75, -0.25, 0.6]}>
+                        <meshStandardMaterial map={tex2} />
+                    </mesh>
+                    <mesh geometry={nodes.Cell1.geometry} material={materials.Cell1Material} scale={0.7} position={[0, -0.25, 0.6]}>
+                        <meshStandardMaterial map={tex2} />
+                    </mesh>
+                    <mesh geometry={nodes.Cell1.geometry} material={materials.Cell1Material} scale={0.7} position={[-0.75, -0.25, 0.6]}>
+                        <meshStandardMaterial map={tex2} />
+                    </mesh>
+                    <mesh geometry={nodes.Cell1.geometry} material={materials.Cell1Material} scale={0.7} position={[0.75, -0.25, -0.2]}>
+                        <meshStandardMaterial map={tex2} />
+                    </mesh>
+                    <mesh geometry={nodes.Cell1.geometry} material={materials.Cell1Material} scale={0.7} position={[0, -0.25, -0.2]}>
+                        <meshStandardMaterial map={tex2} />
+                    </mesh>
+                    <mesh geometry={nodes.Cell1.geometry} material={materials.Cell1Material} scale={0.7} position={[-0.75, -0.25, -0.2]}>
+                        <meshStandardMaterial map={tex2} />
+                    </mesh>
+                </React.Suspense>
+            </mesh>
+        </React.Suspense>
+    );
+    // z+ moves up
+    // y+ moves closer
+    // rotation Y turns block counter-clockwise
 }
 
 function MyTestShip(props) {
