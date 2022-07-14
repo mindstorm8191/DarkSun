@@ -1,0 +1,66 @@
+Dark Sun notes
+
+function ShipClass_Basic1() {
+    let b = {
+        name: "Basic 1",
+        model: "ship1.gltf",
+        coreMeshName: "cube",
+        // core material will use the same name
+        textureSet: ["steelwall.jpg"],
+        weight: 50,
+        modelScale: 0.25,
+        defaultRotation: [Math.pi()/2,0,0],
+        render: (props)=> {
+            // props has modelData, textureData and stats
+            return (
+                <mesh
+                    model={props.modelData.Cell1.model}
+                >
+                    <meshStandardMaterial texture={props.textureData.Cell1Material} />
+                </mesh>
+            ); 
+        },
+    };
+    return b;
+}
+
+function RenderShip(ship) {
+    const model = useLoader(...);
+    const texSet = ship.textureSet.map(path => loadTexture(path));
+    const InnerRender = ship.render;
+    
+    return (
+        <mesh
+            scale: {ship.modelScale}
+            rotation: {[
+                ship.defaultRotation[0] + ship.rotation[0],
+                ship.defaultRotation[1] + ship.rotation[1],
+                ship.defaultRotation[2] + ship.rotation[2]
+            ]}
+        >
+            <InnerRender
+                modelData={model}
+                textureData={texSet}
+                stats={null}
+            />
+        </mesh>
+    );
+}
+
+
+
+
+
+
+;
+
+
+
+
+
+
+
+
+
+
+
