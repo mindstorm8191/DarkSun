@@ -104,3 +104,56 @@ function MouseBall(props) {
         </React.Suspense>
     );
 }
+
+function MyTestShip(props) {
+    const myMesh = React.useRef();
+    const { nodes, materials } = useGLTF("http://localhost/DarkSun/getmedia.php?file=ship1.gltf");
+    const tex = useLoader(TextureLoader, "http://localhost/DarkSun/getmedia.php?file=steelwall2.jpg");
+
+    let wasAdrift = false;
+    let adrift = {};
+    if (wasAdrift !== props.isAdrift) {
+        if (props.isAdrift) {
+            // This is now drifting. Set adrift rates
+            adrift.x = Math.random() * 0.006 - 0.003;
+            adrift.y = Math.random() * 0.006 - 0.003;
+            adrift.rx = Math.random() * 0.01 - 0.005;
+            adrift.ry = Math.random() * 0.01 - 0.005;
+            //adrift.rz = Math.random() * 0.02 - 0.01;
+        }
+    }
+
+    useFrame(() => {
+        if (props.isAdrift) {
+            myMesh.current.position.x += adrift.x;
+            myMesh.current.position.y += adrift.y;
+            myMesh.current.rotation.x += adrift.rx;
+            myMesh.current.rotation.y += adrift.ry;
+        }
+    });
+
+    // Rotation; the mesh recognizes rotation as an x,y,z set, even when passed in as an array. However, using rotation through props
+    // doesn't convert it to x,y,z values yet
+
+    return (
+        <React.Suspense fallback={null}>
+            <mesh
+                {...props}
+                ref={myMesh}
+                rotation={[
+                    (props.rotation ? props.rotation[0] : 0) + Math.PI / 2,
+                    (props.rotation ? props.rotation[1] : 0) + 0,
+                    (props.rotation ? props.rotation[2] : 0) + 0,
+                ]}
+                scale={0.2}
+                geometry={nodes.ShipBody.geometry}
+                material={materials.ShipBodyMaterial}
+            >
+                <React.Suspense fallback={<meshPhongMaterial color="red" />}>
+                    <meshStandardMaterial map={tex} />
+                </React.Suspense>
+            </mesh>
+        </React.Suspense>
+    );
+}
+
