@@ -187,11 +187,11 @@ export function RenderPart(props) {
                 {...props}
                 geometry={nodes[props.part.coreMeshName].geometry}
                 material={materials[props.part.coreMeshName+"Material"]}
-                scale={props.part.isLoose?props.part.defaultScale:1}
+                scale={1/*props.isAttached?1:props.part.defaultScale*/}
                 position={
                     props.isAttached?[props.position[0]-props.part.rootPortPosition[0], props.position[1]-props.part.rootPortPosition[1], props.position[2]-props.part.rootPortPosition[2]]:[0,0,0]
                 }
-                rotation={props.isLoose?props.part.defaultRotation:[0,props.attachRot,0]}
+                rotation={props.isAttached?[0,props.attachRot,0]:0}
             >
                 <meshStandardMaterial map={textures[0]} />
                 {/*Now, render the part-specific content */}
