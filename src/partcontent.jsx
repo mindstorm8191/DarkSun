@@ -105,14 +105,17 @@ export function PartClass_Engine1() {
         coreModel: "engine1.gltf",
         coreMeshName: "Base",
         textureSet: ['steelwall2.jpg', 'MetalPipes.png'],
-        defaultRotation: [-Math.PI/2,0,0],
+        defaultRotation: [0,0,0], // [0,0,Math.PI/2],
         rootPortPosition: [0,0,0],
         defaultScale: 0.25,
         weight: 100,
         ports: [],
         Render: (props) => {
-            console.log('Render the engine!');
-            return null;
+            return (
+                <mesh geometry={props.nodes.Spinner.geometry} material={props.materials.SpinnerGeometry} >
+                    <meshStandardMaterial map={props.texSet[1]} />
+                </mesh>
+            );
         } 
     };
     return b;
@@ -176,22 +179,18 @@ export function RenderPart(props) {
     //console.log(props.position);
 //    console.log(props.part);
 
-    if(props.part.name==="Basic Engine 1") {
-        console.log(nodes);
-    }
-
+    if(props.isAttached===false) console.log(props.part);
+    
     return (
         <React.Suspense fallback={null}>
             <mesh
                 {...props}
                 geometry={nodes[props.part.coreMeshName].geometry}
                 material={materials[props.part.coreMeshName+"Material"]}
-                scale={props.isLoose?props.part.defaultScale:1}
+                scale={props.part.isLoose?props.part.defaultScale:1}
                 position={
-                    props.isLoose?
-                        props.position?props.position:
-                        [0,0,0]:
-                    [props.position[0]-props.part.rootPortPosition[0], props.position[1]-props.part.rootPortPosition[1], props.position[2]-props.part.rootPortPosition[2]]}
+                    props.isAttached?[props.position[0]-props.part.rootPortPosition[0], props.position[1]-props.part.rootPortPosition[1], props.position[2]-props.part.rootPortPosition[2]]:[0,0,0]
+                }
                 rotation={props.isLoose?props.part.defaultRotation:[0,props.attachRot,0]}
             >
                 <meshStandardMaterial map={textures[0]} />
@@ -253,6 +252,7 @@ export function RenderShip(props) {
                             showPorts={props.showPorts}
                             isLoose={false}
                             attachRot={port.rot}
+                            isAttached={true}
                         />
                     );
                 })}
@@ -285,48 +285,3 @@ export function PartClass_engine_ice1() {
     return b;
 }
 
-export function MyCapacitor(props) {
-    // See if we can load something with multiple parts...
-
-    const { nodes, materials } = useGLTF("http://localhost/DarkSun/getmedia.php?file=Capacitor2.gltf");
-    const tex1 = useLoader(TextureLoader, "http://localhost/DarkSun/getmedia.php?file=steelwall2.jpg");
-    const tex2 = useLoader(TextureLoader, "http://localhost/DarkSun/getmedia.php?file=sunflare.jpg");
-
-    return (
-        <React.Suspense fallback={null}>
-            <mesh
-                {...props}
-                geometry={nodes.Box.geometry}
-                material={materials.BoxMaterial}
-                scale={0.3}
-                rotation={[Math.PI / 2, Math.PI, 0]}
-                position={[-1, 0, 0]}
-            >
-                <React.Suspense fallback={null}>
-                    <meshStandardMaterial map={tex1} />
-                    <mesh geometry={nodes.Cell1.geometry} material={materials.Cell1Material} scale={0.7} position={[0.75, -0.25, 0.6]}>
-                        <meshStandardMaterial map={tex2} />
-                    </mesh>
-                    <mesh geometry={nodes.Cell1.geometry} material={materials.Cell1Material} scale={0.7} position={[0, -0.25, 0.6]}>
-                        <meshStandardMaterial map={tex2} />
-                    </mesh>
-                    <mesh geometry={nodes.Cell1.geometry} material={materials.Cell1Material} scale={0.7} position={[-0.75, -0.25, 0.6]}>
-                        <meshStandardMaterial map={tex2} />
-                    </mesh>
-                    <mesh geometry={nodes.Cell1.geometry} material={materials.Cell1Material} scale={0.7} position={[0.75, -0.25, -0.2]}>
-                        <meshStandardMaterial map={tex2} />
-                    </mesh>
-                    <mesh geometry={nodes.Cell1.geometry} material={materials.Cell1Material} scale={0.7} position={[0, -0.25, -0.2]}>
-                        <meshStandardMaterial map={tex2} />
-                    </mesh>
-                    <mesh geometry={nodes.Cell1.geometry} material={materials.Cell1Material} scale={0.7} position={[-0.75, -0.25, -0.2]}>
-                        <meshStandardMaterial map={tex2} />
-                    </mesh>
-                </React.Suspense>
-            </mesh>
-        </React.Suspense>
-    );
-    // z+ moves up
-    // y+ moves closer
-    // rotation Y turns block counter-clockwise
-}

@@ -42,10 +42,9 @@ function App() {
         let myShip = createShip();
         shipList.push(myShip);
         attachPart(myShip, 0, createPart("Basic Capacitor 1"));
-
         //attachPart(myShip, 1, createPart("Basic Engine 1"));
 
-        let engine = createPart("Basic Engine 1");
+        let engine = createPart("Basic Capacitor 1");
         loosePartList.push(engine);
         //console.log(loosePartList);
 
@@ -70,6 +69,8 @@ function App() {
         return null;
     }
 
+    console.log("Loose parts: " + looseParts.length);
+
     return (
         <div id="canvas-container">
             <Canvas style={{ backgroundColor: "#202020", height: "100vh" }} camera={{ position: [0, 0, 5] }}>
@@ -78,12 +79,12 @@ function App() {
                     return <RenderShip key={key} ship={workShip} showPorts={userMode === "edit"} />;
                 })}
                 {looseParts.map((workPart, key) => {
-                    return <RenderPart key={key} part={workPart} position={[-1, 0, 0]} showPorts={userMode === "edit"} />;
+                    return <RenderPart key={key} part={workPart} position={[-1, 0, 0]} showPorts={userMode === "edit"} isAttached={false} />;
                 })}
                 {/* Also show a starry background... we'll probably need to improve this later, but this should do for now */}
                 <StarryBackground />
-                {/*<MousePointPlane />*/}
-                <TryEngineModel />
+                {/*<MousePointPlane />
+                <TryEngineModel />*/}
                 <Dolly />
             </Canvas>
             <div style={{ position: "absolute", bottom: 0, right: 0, backgroundColor: "lightgrey", padding: 5, fontWeight: "bold" }}>
