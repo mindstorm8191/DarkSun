@@ -21,6 +21,7 @@ export function ShipClass_Basic1() {
         defaultRotation: [Math.PI / 2, 0, 0],
         defaultScale: 0.2,
         weight: 50,
+        loadLimit:   2000,
         ports: [
             {id:0, portx: 1.5, porty:0, portz:-1.5, realx:2.5, realy:0, realz:-3, rot:Math.PI/2},
             {id:1, portx: -1.5, porty:0, portz:-1.5, realx:-2.5, realy:0, realz:-3, rot:-Math.PI/2},
@@ -31,9 +32,6 @@ export function ShipClass_Basic1() {
         // z+ is down the screen
         // 
         Render: (props) => null,
-        attachPart: (port, part) => {
-
-        }
     };
     return b;
 }
@@ -62,7 +60,7 @@ export function createPart(partName) {
     }
     return {
         ...classFunct(),
-        position:[0,0,0],
+        position:[1,0,0],
         adrift:true
     }
 }
@@ -105,18 +103,52 @@ export function PartClass_Engine1() {
         coreModel: "engine1.gltf",
         coreMeshName: "Base",
         textureSet: ['steelwall2.jpg', 'MetalPipes.png'],
-        defaultRotation: [0,0,0], // [0,0,Math.PI/2],
+        defaultRotation: [-Math.PI/2,0,0], // [0,0,Math.PI/2],
         rootPortPosition: [0,0,0],
         defaultScale: 0.25,
         weight: 100,
+        loadLimit: 500,
         ports: [],
         Render: (props) => {
+            const myMesh = React.useRef();
+            useFrame(() => {
+                myMesh.current.rotation.z += .025;//0.01;
+            });
             return (
-                <mesh geometry={props.nodes.Spinner.geometry} material={props.materials.SpinnerGeometry} >
+                <mesh
+                    ref={myMesh}
+                    geometry={props.nodes.Spinner.geometry}
+                    material={props.materials.SpinnerGeometry}
+                    rotation={[-Math.PI / 2, 0, 0]}
+                    scale={[0.32,0.32,0.2]}
+                    position={[0.2, -0.25, 1.25]}
+                >
                     <meshStandardMaterial map={props.texSet[1]} />
                 </mesh>
             );
         } 
+    };
+    return b;
+}
+
+export function PartClass_Thruster1() {
+    // Returns a thruster class object for moving ships around
+    let b = {
+        objectType: 'part',
+        name: 'Basic Thruster 1',
+        partClass: 'thruster',
+        coreModel: 'Thruster1.gltf',
+        coreMeshName: "Cube",
+        textureSet: ["steelwall2.jpg"],
+        defaultRotation: [0,0,0],
+        rootPortPosition: [0,0,-2],
+        defaultScale: 1,
+        weight: 100,
+        loadLimit: 400,
+        ports: [
+            {id:0, x:0, y:0, z:3}
+        ],
+        Render: ()=>null
     };
     return b;
 }
@@ -134,6 +166,7 @@ export function PartClass_Capacitor1() {
         rootPortPosition: [0,0,-1.5],
         defaultScale: 0.25,
         weight: 120,
+        loadLimit: 400,
         ports: [
             {id:0, x:1.5, y:0, z:1.5},
             {id:1, x: -1.5, y:0, z:1.5}
@@ -187,7 +220,38 @@ export function RenderPart(props) {
                 {...props}
                 geometry={nodes[props.part.coreMeshName].geometry}
                 material={materials[props.part.coreMeshName+"Material"]}
-                scale={1/*props.isAttached?1:props.part.defaultScale*/}
+                position={props.isAttached?[props.position[0]-props.part.rootPortPosition[0], props.position[1]-props.part.rootPortPosition[1], props.position[2]-props.part.rootPortPosition[2]]:props.part.position}
+                rotation={props.isAttached?[0,props.attachRot,0]:props.part.defaultRotation}
+                scale={props.isAttached?1:props.part.defaultScale}
+            >
+                <meshStandardMaterial map={textures[0]} />
+                <MoreDetail nodes={nodes} materials={materials} texSet={textures}/>
+            </mesh>
+        </React.Suspense>
+    );
+}
+
+export function OldRenderPart(props) {
+    // Handles rendering a part, with all attached equipment
+    // prop fields - data
+    //     part - part object to render
+    //     showPorts - set to true to show input & output ports
+
+    const {nodes, materials} = useGLTF("http://localhost/DarkSun/getmedia.php?file="+ props.part.coreModel);
+    const textures = useLoader(TextureLoader, props.part.textureSet.map((f)=>"http://localhost/DarkSun/getmedia.php?file="+f));
+    const MoreDetail = props.part.Render;
+    //console.log(props.position);
+//    console.log(props.part);
+
+    if(props.isAttached===false) console.log(props.part);
+    
+    return (
+        <React.Suspense fallback={null}>
+            <mesh
+                {...props}
+                geometry={nodes[props.part.coreMeshName].geometry}
+                material={materials[props.part.coreMeshName+"Material"]}
+                scale={1}
                 position={
                     props.isAttached?[props.position[0]-props.part.rootPortPosition[0], props.position[1]-props.part.rootPortPosition[1], props.position[2]-props.part.rootPortPosition[2]]:[0,0,0]
                 }

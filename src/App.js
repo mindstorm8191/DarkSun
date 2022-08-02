@@ -44,7 +44,7 @@ function App() {
         attachPart(myShip, 0, createPart("Basic Capacitor 1"));
         //attachPart(myShip, 1, createPart("Basic Engine 1"));
 
-        let engine = createPart("Basic Capacitor 1");
+        let engine = createPart("Basic Engine 1");
         loosePartList.push(engine);
         //console.log(loosePartList);
 
@@ -79,7 +79,7 @@ function App() {
                     return <RenderShip key={key} ship={workShip} showPorts={userMode === "edit"} />;
                 })}
                 {looseParts.map((workPart, key) => {
-                    return <RenderPart key={key} part={workPart} position={[-1, 0, 0]} showPorts={userMode === "edit"} isAttached={false} />;
+                    return <RenderPart key={key} part={workPart} showPorts={userMode === "edit"} isAttached={false} scale={[-1, 1, 1]} />;
                 })}
                 {/* Also show a starry background... we'll probably need to improve this later, but this should do for now */}
                 <StarryBackground />
